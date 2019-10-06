@@ -16,7 +16,7 @@ vecs = {}
 for m in Path(data_dir).glob("*.model"):
     vecs[m.stem] = KeyedVectors.load(str(m))
 
-print(vecs)
+print(data_dir, vecs)
 
 
 @app.route("/<vec_name>")
