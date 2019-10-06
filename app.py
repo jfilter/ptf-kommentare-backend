@@ -14,7 +14,7 @@ data_dir = "data" if DEBUG else "/data"
 
 vecs = {}
 for m in Path(data_dir).glob("*.model"):
-    vecs[m.stem] = KeyedVectors.load(str(m))
+    vecs[m.stem] = KeyedVectors.load(str(m), mmap="r")
 
 print(data_dir, vecs)
 
