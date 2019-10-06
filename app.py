@@ -5,9 +5,6 @@ from flask import Flask, jsonify, request
 from gensim.models import KeyedVectors
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import MinMaxScaler
-from dotenv import load_dotenv
-
-load_dotenv()
 
 app = Flask(__name__)
 
@@ -18,6 +15,8 @@ data_dir = "data" if DEBUG else "/data"
 vecs = {}
 for m in Path(data_dir).glob("*.model"):
     vecs[m.stem] = KeyedVectors.load(str(m))
+
+print(data_dir, vecs)
 
 
 @app.route("/<vec_name>")
