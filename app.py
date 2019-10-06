@@ -16,12 +16,9 @@ vecs = {}
 for m in Path(data_dir).glob("*.model"):
     vecs[m.stem] = KeyedVectors.load(str(m), mmap="r")
 
-print(data_dir, vecs)
-
-
 @app.route("/<vec_name>")
 def index(vec_name):
-    q, n = request.args.get("q"), request.args.get("n", 10)
+    q, n = request.args.get("q"), request.args.get("n", 10, type=int)
     v = vecs[vec_name]
     results = v.most_similar(q, topn=n)
     tokens, _ = list(zip(*results))
