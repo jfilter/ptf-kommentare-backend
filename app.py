@@ -8,7 +8,7 @@ from sklearn.preprocessing import MinMaxScaler
 
 app = Flask(__name__)
 
-DEBUG = not "DOKKU_APP_NAME" in environ
+DEBUG = not "DOKKU_ROOT" in environ
 
 data_dir = "data" if DEBUG else "/data"
 
