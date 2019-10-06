@@ -11,7 +11,7 @@ A mirco service ("API") to serve 2D locale views around a given token in an vect
 
 ## Production
 
-1. create Dokku app etc.
+1. create Dokku app etc., set env variable `FILTER_PRODUCTION`
 2. `dokku storage:mount the-app-name /home/some/folder:/data` and put models in that folder (see above)
 3. `git push dokku`
 
