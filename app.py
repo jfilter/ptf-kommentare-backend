@@ -6,7 +6,10 @@ from gensim.models import KeyedVectors
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import MinMaxScaler
 
+from flask_cors import CORS
+
 app = Flask(__name__)
+CORS(app)
 
 DEBUG = not "FILTER_PRODUCTION" in environ
 
