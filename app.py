@@ -25,7 +25,8 @@ def index(vec_name):
     q, n = request.args.get("q"), request.args.get("n", 10, type=int)
     v = vecs[vec_name]
     results = v.most_similar(q, topn=n)
-    tokens, _ = [q] + list(zip(*results))
+    tokens, _ = list(zip(*results))
+    tokens = [q] + tokens
     vectors = [v[t] for t in tokens]
     vectors = PCA(n_components=2).fit_transform(vectors)
     vectors = MinMaxScaler((-1, 1)).fit_transform(vectors)
