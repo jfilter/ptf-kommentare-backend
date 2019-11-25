@@ -1,4 +1,5 @@
 import random
+import re
 from os import environ
 from pathlib import Path
 
@@ -18,6 +19,18 @@ data_dir = "data" if DEBUG else "/data"
 vecs = {}
 for m in Path(data_dir).glob("*.model"):
     vecs[m.stem] = KeyedVectors.load(str(m), mmap="r")
+
+
+@app.route("/typeahead/<vec_name>")
+def typeahead(vec_name):
+    q = request.args.get("q", type=str)
+    v = vecs[vec_name]
+
+    q = re.sub(r"\d+", "0", q)
+    q = q.lower()
+
+    tokens = [t for t in v.index2entity if t.startswith(q)]
+    return jsonify({"token": tokens[:10]})
 
 
 @app.route("/nearest/<vec_name>")
