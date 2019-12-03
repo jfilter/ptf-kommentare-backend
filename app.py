@@ -30,7 +30,7 @@ def typeahead(vec_name):
     q = q.lower()
 
     tokens = [t for t in v.index2entity if t.startswith(q)]
-    return jsonify({"tokens": tokens[:10]})
+    return jsonify({"tokens": [q] + tokens[:10]})
 
 
 @app.route("/nearest/<vec_name>")
@@ -58,6 +58,16 @@ def dist(vec_name):
 
 @app.route("/sim/<vec_name>")
 def sim(vec_name):
+    """get similarities
+    """
+    q, n = request.args.get("q"), request.args.get("n", 10, type=int)
+    v = vecs[vec_name]
+    results = v.most_similar(q, topn=n)
+    return jsonify({"tokens": [r[0] for r in results], "sims": [r[1] for r in results]})
+
+
+@app.route("/sim_multiple/<vec_name>")
+def sim_multiple(vec_name):
     """get similarities
     """
     qs = request.args.getlist("q")
