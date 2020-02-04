@@ -34,7 +34,8 @@ def typeahead(vec_name):
     q = q.lower()
 
     tokens = [t for t in v.index2entity if t.startswith(q)]
-    return jsonify({"tokens": [q] + tokens[:10]})
+    tokens = sorted(tokens, key=len)
+    return jsonify({"tokens": tokens[:10]})
 
 
 @app.route("/nearest/<vec_name>")
