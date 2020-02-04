@@ -24,6 +24,10 @@ for m in Path(data_dir).glob("*.model"):
 @app.route("/typeahead/<vec_name>")
 def typeahead(vec_name):
     q = request.args.get("q", type=str)
+
+    if q == '':
+        return jsonify({"tokens": []})
+
     v = vecs[vec_name]
 
     q = re.sub(r"\d+", "0", q)
