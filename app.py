@@ -41,6 +41,9 @@ def typeahead(vec_name):
 @app.route("/nearest/<vec_name>")
 def nearest(vec_name):
     q, n = request.args.get("q"), request.args.get("n", 10, type=int)
+    if q == '':
+        return jsonify({"tokens": [], "vectors": []})
+
     v = vecs[vec_name]
     results = v.most_similar(q, topn=n)
     tokens, _ = list(zip(*results))
