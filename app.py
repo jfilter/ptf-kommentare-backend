@@ -2,6 +2,7 @@ import random
 import re
 from os import environ
 from pathlib import Path
+import requests
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
@@ -36,6 +37,30 @@ def typeahead(vec_name):
     tokens = [t for t in v.index2entity if t.startswith(q)]
     tokens = sorted(tokens, key=len)
     return jsonify({"tokens": tokens[:10]})
+
+# make sure to check wheter file exists
+@app.route("/typeahead_videos/<vec_name>")
+def typeahead_videos(vec_name):
+    q = request.args.get("q", type=str)
+
+    if q == '':
+        return jsonify({"tokens": []})
+
+    v = vecs[vec_name]
+
+    q = re.sub(r"\d+", "0", q)
+    q = q.lower()
+
+    tokens = [t for t in v.index2entity if t.startswith(q)]
+    tokens = sorted(tokens, key=len)
+    results = []
+    for t in tokens:
+        if len(results) >= 10:
+            break
+        r = requests.head('http://kommentare.vis.one/videos/' + t + '.mp4')
+        if r.ok:
+            results.append(t)
+    return jsonify({"tokens": results})
 
 
 @app.route("/nearest/<vec_name>")

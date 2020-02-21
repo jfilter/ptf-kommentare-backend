@@ -13,6 +13,7 @@ scikit-learn = "==0.21.3"
 Flask = "==1.0.4"
 gunicorn = "==19.9.0"
 flask-cors = "*"
+requests = "*"
 
 [requires]
 python_version = "3.7"
