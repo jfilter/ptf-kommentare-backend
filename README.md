@@ -15,7 +15,8 @@ Used for <https://kommentare.vis.one>.
 
 1. create Dokku app etc., set env variable `FILTER_PRODUCTION`
 2. `dokku storage:mount the-app-name /home/some/folder:/data` and put models in that folder (see above)
-3. `git push dokku`
+3. Create Dokku redis service and link it
+4. `git push dokku`
 
 ## License
 
