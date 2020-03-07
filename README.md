@@ -1,6 +1,8 @@
-# serve-keyed-vector-locale
+# Kommentare Backend
 
 A mirco service ("API") to serve 2D locale views around a given token in an vector space ("word embedding"). Powered by [GenSim](https://radimrehurek.com/gensim/)'s [KeyedVectors](https://radimrehurek.com/gensim/models/keyedvectors.html). Hosting in production with [Dokku](https://github.com/dokku/dokku).
+
+Used for <https://kommentare.vis.one>.
 
 ## Development
 

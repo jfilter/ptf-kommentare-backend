@@ -4,6 +4,7 @@ from os import environ
 from pathlib import Path
 import requests
 
+from flask_caching import Cache
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from gensim.models import KeyedVectors
@@ -17,12 +18,28 @@ DEBUG = not "FILTER_PRODUCTION" in environ
 
 data_dir = "data" if DEBUG else "/data"
 
+# caching at browser & nginx cache
+@app.after_request
+def add_header(response):
+    response.cache_control.max_age = 60 * 60 * 24 # 1 day
+    response.cache_control.public = True
+    return response
+
+if DEBUG:
+    app.config["CACHE_TYPE"] = "null"
+else:
+    app.config["CACHE_TYPE"] = "redis"
+    app.config["CACHE_REDIS_URL"] = os.environ["REDIS_URL"]
+    app.config["CACHE_DEFAULT_TIMEOUT"] = 60 * 60 * 24 * 14  # 2 weeks
+
+cache = Cache(app)
+
 vecs = {}
 for m in Path(data_dir).glob("*.model"):
     vecs[m.stem] = KeyedVectors.load(str(m), mmap="r")
 
-
 @app.route("/typeahead/<vec_name>")
+@cache.cached(query_string=True)
 def typeahead(vec_name):
     q = request.args.get("q", type=str)
 
@@ -40,6 +57,7 @@ def typeahead(vec_name):
 
 # make sure to check wheter file exists
 @app.route("/typeahead_videos/<vec_name>")
+@cache.cached(query_string=True)
 def typeahead_videos(vec_name):
     q = request.args.get("q", type=str)
 
@@ -64,6 +82,7 @@ def typeahead_videos(vec_name):
 
 
 @app.route("/nearest/<vec_name>")
+@cache.cached(query_string=True)
 def nearest(vec_name):
     q, n = request.args.get("q"), request.args.get("n", 10, type=int)
     if q == '':
@@ -80,6 +99,7 @@ def nearest(vec_name):
 
 
 @app.route("/dist/<vec_name>")
+@cache.cached(query_string=True)
 def dist(vec_name):
     tokens = request.args.getlist("q")
     v = vecs[vec_name]
@@ -90,6 +110,7 @@ def dist(vec_name):
 
 
 @app.route("/sim/<vec_name>")
+@cache.cached(query_string=True)
 def sim(vec_name):
     """get similarities
     """
@@ -100,6 +121,7 @@ def sim(vec_name):
 
 
 @app.route("/sim_multiple/<vec_name>")
+@cache.cached(query_string=True)
 def sim_multiple(vec_name):
     """get similarities
     """
@@ -109,6 +131,7 @@ def sim_multiple(vec_name):
 
 
 @app.route("/sim_random/<vec_name>")
+@cache.cached(query_string=True)
 def sim_random(vec_name):
     """get similarities, n random tokens
     """
@@ -119,6 +142,7 @@ def sim_random(vec_name):
 
 
 @app.route("/token_random/<vec_name>")
+@cache.cached(query_string=True)
 def random_tokens(vec_name):
     n = request.args.get("n", 100, type=int)
     v = vecs[vec_name]
