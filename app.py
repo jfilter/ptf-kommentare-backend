@@ -29,7 +29,7 @@ if DEBUG:
     app.config["CACHE_TYPE"] = "null"
 else:
     app.config["CACHE_TYPE"] = "redis"
-    app.config["CACHE_REDIS_URL"] = os.environ["REDIS_URL"]
+    app.config["CACHE_REDIS_URL"] = environ["REDIS_URL"]
     app.config["CACHE_DEFAULT_TIMEOUT"] = 60 * 60 * 24 * 14  # 2 weeks
 
 cache = Cache(app)
