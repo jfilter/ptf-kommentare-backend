@@ -4,5 +4,5 @@ WORKDIR /app
 
 RUN pip install pipenv
 ADD . .
-RUN pipenv install
+RUN pipenv install --system
 CMD gunicorn app:app
